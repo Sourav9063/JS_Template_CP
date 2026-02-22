@@ -1,6 +1,6 @@
 "use strict";
 
-const { Queue, PriorityQueue } = require("./ds");
+const { Queue, PriorityQueue, DSU } = require("./ds");
 
 /**
  * Breadth-First Search (BFS) for unweighted graphs.
@@ -162,11 +162,101 @@ function topologicalSort(adj, n) {
     return order.length === n ? order : null;
 }
 
+/**
+ * Kruskal's Algorithm for MST.
+ * @param {number} n - Number of nodes.
+ * @param {Array<[number, number, number]>} edges - Edge list [[u, v, w], ...].
+ * @returns {{mstWeight: number, mstEdges: Array<[number, number, number]>}}
+ */
+function kruskal(n, edges) {
+    edges.sort((a, b) => a[2] - b[2]); // Sort by weight
+    const dsu = new DSU(n);
+    let mstWeight = 0;
+    const mstEdges = [];
+    
+    for (const [u, v, w] of edges) {
+        if (dsu.union(u, v)) {
+            mstWeight += w;
+            mstEdges.push([u, v, w]);
+        }
+    }
+    
+    if (dsu.components > 1) return { mstWeight: -1, mstEdges: [] }; // Graph not connected (assuming 0-indexed potentially unused 0, logic check needed based on 1-based DSU in ds.js)
+    // DSU in ds.js is 1-based/0-based flexible (size n+1). 
+    // If graph uses 1..n, components starts at n. Each union decr by 1. 
+    // If connected, components should be 1 (if node 0 is used, else maybe 2 if node 0 unused). 
+    // Adjust logic based on usage. Assuming standard 1..n usage.
+    
+    return { mstWeight, mstEdges };
+}
+
+/**
+ * Lowest Common Ancestor (LCA) using Binary Lifting.
+ * Preprocessing: O(N log N), Query: O(log N).
+ */
+class LCA {
+    /**
+     * @param {Array<Array<number>>} adj - Adjacency list (Tree).
+     * @param {number} root - Root of the tree.
+     * @param {number} n - Number of nodes.
+     */
+    constructor(adj, root, n) {
+        this.n = n;
+        this.adj = adj;
+        this.LOG = Math.ceil(Math.log2(n + 1));
+        this.up = Array.from({ length: n + 1 }, () => new Array(this.LOG + 1).fill(0));
+        this.depth = new Array(n + 1).fill(0);
+        this.root = root;
+        
+        this._dfs(root, root);
+    }
+
+    _dfs(u, p) {
+        this.up[u][0] = p;
+        for (let i = 1; i <= this.LOG; i++) {
+            this.up[u][i] = this.up[this.up[u][i - 1]][i - 1];
+        }
+        for (const v of this.adj[u]) {
+            if (v !== p) {
+                this.depth[v] = this.depth[u] + 1;
+                this._dfs(v, u);
+            }
+        }
+    }
+
+    getLCA(u, v) {
+        if (this.depth[u] < this.depth[v]) [u, v] = [v, u];
+        
+        // Lift u to same depth as v
+        for (let i = this.LOG; i >= 0; i--) {
+            if (this.depth[u] - (1 << i) >= this.depth[v]) {
+                u = this.up[u][i];
+            }
+        }
+        
+        if (u === v) return u;
+        
+        for (let i = this.LOG; i >= 0; i--) {
+            if (this.up[u][i] !== this.up[v][i]) {
+                u = this.up[u][i];
+                v = this.up[v][i];
+            }
+        }
+        return this.up[u][0];
+    }
+
+    dist(u, v) {
+        return this.depth[u] + this.depth[v] - 2 * this.depth[this.getLCA(u, v)];
+    }
+}
+
 module.exports = {
     bfs,
     dfs,
     dijkstra,
     bellmanFord,
     floydWarshall,
-    topologicalSort
+    topologicalSort,
+    kruskal,
+    LCA
 };

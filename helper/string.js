@@ -113,8 +113,74 @@ class Trie {
     }
 }
 
+/**
+ * Rolling Hash for String Matching.
+ * Uses BigInt for robustness.
+ * Default MOD = 1e9 + 9, BASE = 31.
+ */
+class RollingHash {
+    constructor(s, base = 31n, mod = 1000000009n) {
+        this.mod = BigInt(mod);
+        this.base = BigInt(base);
+        this.n = s.length;
+        this.hash = new BigInt64Array(this.n + 1); // 0-indexed prefix hash
+        this.power = new BigInt64Array(this.n + 1);
+        
+        this.hash[0] = 0n;
+        this.power[0] = 1n;
+        
+        for (let i = 0; i < this.n; i++) {
+            this.hash[i + 1] = (this.hash[i] * this.base + BigInt(s.charCodeAt(i))) % this.mod;
+            this.power[i + 1] = (this.power[i] * this.base) % this.mod;
+        }
+    }
+    
+    /**
+     * Get hash of substring s[l...r] (0-indexed, inclusive).
+     * @param {number} l 
+     * @param {number} r 
+     * @returns {bigint}
+     */
+    getHash(l, r) {
+        let res = (this.hash[r + 1] - this.hash[l] * this.power[r - l + 1]) % this.mod;
+        if (res < 0n) res += this.mod;
+        return res;
+    }
+}
+
+/**
+ * Manacher's Algorithm.
+ * Returns { d1, d2 } where:
+ * d1[i] = radius of odd-length palindrome centered at i. (len = 2*d1[i] - 1)
+ * d2[i] = radius of even-length palindrome centered at i-1 and i. (len = 2*d2[i])
+ */
+function manacher(s) {
+    const n = s.length;
+    const d1 = new Array(n).fill(0);
+    const d2 = new Array(n).fill(0);
+    
+    // Odd length palindromes
+    for (let i = 0, l = 0, r = -1; i < n; i++) {
+        let k = (i > r) ? 1 : Math.min(d1[l + r - i], r - i + 1);
+        while (0 <= i - k && i + k < n && s[i - k] === s[i + k]) k++;
+        d1[i] = k--;
+        if (i + k > r) { l = i - k; r = i + k; }
+    }
+    
+    // Even length palindromes
+    for (let i = 0, l = 0, r = -1; i < n; i++) {
+        let k = (i > r) ? 0 : Math.min(d2[l + r - i + 1], r - i + 1);
+        while (0 <= i - k - 1 && i + k < n && s[i - k - 1] === s[i + k]) k++;
+        d2[i] = k--;
+        if (i + k > r) { l = i - k - 1; r = i + k; }
+    }
+    return { d1, d2 };
+}
+
 module.exports = {
     kmpSearch,
     zFunction,
-    Trie
+    Trie,
+    RollingHash,
+    manacher
 };

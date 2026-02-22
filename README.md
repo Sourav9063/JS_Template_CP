@@ -5,10 +5,39 @@ A highly optimized, boilerplate template for solving Competitive Programming (CP
 JavaScript is notoriously tricky for CP due to strict Time Limit Exceeded (TLE) and Memory Limit Exceeded (MLE) constraints when reading large inputs, as well as its lack of a built-in C++ standard library (STL). This template solves both problems.
 
 ## 🚀 Features
-* **Custom Fast I/O:** Reads standard input directly from the byte buffer (`fs.readFileSync(0)`), completely bypassing the slow `String.split()` method.
-* **C++ STL Equivalents:** Includes `Queue` (Amortized $O(1)$), `Deque`, `PriorityQueue` (Min/Max Heap), and Disjoint Set Union (`DSU`).
-* **Binary Search:** Custom `lowerBound` and `upperBound` implementations.
-* **Math Utilities:** BigInt-safe `gcd`, `lcm`, and modular exponentiation.
+
+### ⚡ Fast I/O
+*   **Buffer-based Reader:** Reads standard input directly from the byte buffer (`fs.readFileSync(0)`), completely bypassing the slow `String.split()` method.
+
+### 📚 Data Structures & Algorithms
+*   **Data Structures:**
+    *   `PriorityQueue` (Min/Max Heap), `Queue`, `Deque`
+    *   `DSU` (Disjoint Set Union)
+    *   `BIT` (Fenwick Tree)
+    *   `SegmentTree` (Lazy Propagation)
+    *   `SparseTable` (Range Minimum Query)
+    *   `Trie`
+*   **Graph Theory:**
+    *   **Traversal:** BFS, DFS
+    *   **Shortest Path:** Dijkstra, Bellman-Ford, Floyd-Warshall
+    *   **Tree Algorithms:** Kruskal's MST, LCA (Binary Lifting)
+    *   **Flow:** Dinic's Algorithm (Max Flow)
+    *   **Other:** Topological Sort
+*   **String Processing:**
+    *   KMP, Z-Algorithm
+    *   Rolling Hash (BigInt safe)
+    *   Manacher's Algorithm
+*   **Math & Number Theory:**
+    *   Sieve of Eratosthenes, Prime Factorization
+    *   Combinatorics (nCr with modulo)
+    *   GCD, LCM, Modular Exponentiation
+    *   Extended Euclidean, Modular Inverse
+*   **Geometry:**
+    *   Point Class (Vector operations)
+    *   Convex Hull (Monotone Chain)
+    *   Polygon Area
+*   **Search:**
+    *   `lowerBound`, `upperBound` (Binary Search)
 
 ---
 
@@ -39,7 +68,6 @@ The template separates the I/O handling (`main`) from the actual problem logic (
 1
 5
 10 20 30 40 50
-
 ```
 
 **Code:**
@@ -64,7 +92,6 @@ function main() {
     }
     process.stdout.write(out.join("\n") + "\n");
 }
-
 ```
 
 ### 2. Reading Strings (No Spaces)
@@ -75,7 +102,6 @@ function main() {
 1
 5
 UDLRR
-
 ```
 
 **Code:**
@@ -95,7 +121,6 @@ function main() {
     }
     process.stdout.write(out.join("\n") + "\n");
 }
-
 ```
 
 ### 3. Reading Full Lines (With Spaces)
@@ -105,7 +130,6 @@ function main() {
 ```text
 1
 Hello World Codeforces
-
 ```
 
 **Code:**
@@ -124,7 +148,6 @@ function main() {
     }
     process.stdout.write(out.join("\n") + "\n");
 }
-
 ```
 
 ### 4. Reading a Matrix / 2D Grid
@@ -136,7 +159,6 @@ function main() {
 2 3
 1 2 3
 4 5 6
-
 ```
 
 **Code:**
@@ -162,7 +184,6 @@ function main() {
     }
     process.stdout.write(out.join("\n") + "\n");
 }
-
 ```
 
 ---

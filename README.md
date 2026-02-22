@@ -33,16 +33,34 @@ Missing **STL in JS**? We've implemented the essential data structures for you:
 
 ## 🛠️ How to Run Locally
 
-To test your **JavaScript CP** code locally without manually typing inputs, create an `io` folder with `input.txt` and `output.txt` files.
-
-Run your script using this command:
+### 1. Install Dependencies
+First, install the necessary dependencies (we use `esbuild` for bundling):
 
 ```bash
-node main.js < io/input.txt > io/output.txt
+npm install
 ```
 
-* **`< io/input.txt`**: Feeds the contents of your input file into the script's standard input.
-* **`> io/output.txt`**: Redirects the script's `process.stdout.write` into the output file.
+### 2. Test with Input File
+To test your code locally, create an `io` folder with `input.txt` and `output.txt` files.
+
+Then run:
+
+```bash
+npm run test
+```
+
+This script (`node main.js < io/input.txt > io/output.txt`) feeds `io/input.txt` into your code and writes the result to `io/output.txt`.
+
+### 3. Bundle for Submission
+When you are ready to submit to an online judge (like Codeforces), you need a single file containing all your code and helper functions.
+
+Run the build script:
+
+```bash
+npm run build
+```
+
+This will generate an **`output.js`** file using `esbuild`. **Copy the contents of `output.js` and paste it into the online judge.**
 
 ---
 
@@ -180,5 +198,5 @@ function main() {
 
 ## ⚠️ Important Note: Codeforces vs. LeetCode
 
-* **Codeforces / AtCoder:** Paste the entire template. These platforms pass raw bytes to standard input, so the **Fast I/O** block is strictly necessary.
+* **Codeforces / AtCoder:** Paste the entire template (or the bundled `output.js`). These platforms pass raw bytes to standard input, so the **Fast I/O** block is strictly necessary.
 * **LeetCode:** **DO NOT** paste the Fast I/O block. LeetCode does not use `stdin`/`stdout`. Only copy the **JS STL** data structures (like `PriorityQueue`, `SegmentTree` or `DSU`) and paste them above your LeetCode solution function.

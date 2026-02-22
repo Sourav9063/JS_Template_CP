@@ -6,7 +6,7 @@ JavaScript is notoriously tricky for CP due to strict Time Limit Exceeded (TLE) 
 
 ## 🚀 Features
 * **Custom Fast I/O:** Reads standard input directly from the byte buffer (`fs.readFileSync(0)`), completely bypassing the slow `String.split()` method.
-* **C++ STL Equivalents:** Includes amortized $O(1)$ `Queue`, `Deque`, `PriorityQueue` (Min/Max Heap), and Disjoint Set Union (`DSU`).
+* **C++ STL Equivalents:** Includes `Queue` (Amortized $O(1)$), `Deque`, `PriorityQueue` (Min/Max Heap), and Disjoint Set Union (`DSU`).
 * **Binary Search:** Custom `lowerBound` and `upperBound` implementations.
 * **Math Utilities:** BigInt-safe `gcd`, `lcm`, and modular exponentiation.
 
@@ -20,7 +20,6 @@ Run your script using this command:
 
 ```bash
 node main.js < io/input.txt > io/output.txt
-
 ```
 
 * **`< io/input.txt`**: Feeds the contents of your input file into the script's standard input.

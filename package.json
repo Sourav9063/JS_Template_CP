@@ -1,0 +1,23 @@
+{
+  "name": "js-cp-template",
+  "version": "1.0.0",
+  "description": "JavaScript Competitive Programming Template",
+  "main": "main.js",
+  "scripts": {
+    "build": "esbuild main.js --bundle --platform=node --outfile=output.js",
+    "test": "node main.js < io/input.txt > io/output.txt",
+    "start": "node main.js"
+  },
+  "keywords": [
+    "cp",
+    "competitive-programming",
+    "javascript",
+    "algorithm",
+    "data-structures"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

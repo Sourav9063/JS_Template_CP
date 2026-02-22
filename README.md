@@ -1,49 +1,39 @@
-# JavaScript Competitive Programming Template
+# JavaScript Competitive Programming Template (JS STL for CP)
 
-A highly optimized, boilerplate template for solving Competitive Programming (CP) problems in Node.js on platforms like Codeforces, AtCoder, and HackerEarth. 
+The ultimate **JavaScript Competitive Programming Template** and **STL for JavaScript**. A highly optimized, boilerplate solution for solving **Competitive Programming (CP)** problems in **Node.js** and **JS** on platforms like **Codeforces**, **AtCoder**, **LeetCode**, and **HackerEarth**.
 
-JavaScript is notoriously tricky for CP due to strict Time Limit Exceeded (TLE) and Memory Limit Exceeded (MLE) constraints when reading large inputs, as well as its lack of a built-in C++ standard library (STL). This template solves both problems.
+JavaScript is often overlooked for **Competitive Programming** due to the lack of a built-in **Standard Template Library (STL)** (like C++) and strict Time Limit Exceeded (TLE) constraints. This repository provides a complete **JS STL** implementation and **Fast I/O** wrapper to make **JavaScript for CP** viable and competitive.
 
-## 🚀 Features
+## 🚀 Features & JS STL Implementations
 
-### ⚡ Fast I/O
-*   **Buffer-based Reader:** Reads standard input directly from the byte buffer (`fs.readFileSync(0)`), completely bypassing the slow `String.split()` method.
+### ⚡ Fast I/O for JavaScript CP
+*   **Buffer-based Reader:** Reads standard input directly from the byte buffer (`fs.readFileSync(0)`), completely bypassing the slow `String.split()` method. Essential for avoiding TLE in **Node.js Competitive Programming**.
 
-### 📚 Data Structures & Algorithms
-*   **Data Structures:**
-    *   `PriorityQueue` (Min/Max Heap), `Queue`, `Deque`
-    *   `DSU` (Disjoint Set Union)
-    *   `BIT` (Fenwick Tree)
-    *   `SegmentTree` (Lazy Propagation)
-    *   `SparseTable` (Range Minimum Query)
-    *   `Trie`
-*   **Graph Theory:**
+### 📚 STL Data Structures in JavaScript
+Missing **STL in JS**? We've implemented the essential data structures for you:
+*   **Priority Queue / Heap:** `PriorityQueue` (Min Heap & Max Heap) for Dijkstra, Prim's, etc.
+*   **Double-Ended Queue:** `Deque` for sliding window maximums and 0-1 BFS.
+*   **Queue:** Efficient `Queue` implementation (unlike JS `Array.shift()` which is O(n)).
+*   **Disjoint Set Union (DSU):** With path compression and rank optimization for graph connectivity.
+*   **Fenwick Tree (BIT):** Binary Indexed Tree for efficient prefix sums and updates.
+*   **Segment Tree:** Complete `SegmentTree` with Lazy Propagation for range queries.
+*   **Sparse Table:** For O(1) Range Minimum Query (RMQ).
+*   **Trie:** Prefix tree for string operations.
+*   **Graph Algorithms:**
     *   **Traversal:** BFS, DFS
     *   **Shortest Path:** Dijkstra, Bellman-Ford, Floyd-Warshall
-    *   **Tree Algorithms:** Kruskal's MST, LCA (Binary Lifting)
-    *   **Flow:** Dinic's Algorithm (Max Flow)
-    *   **Other:** Topological Sort
-*   **String Processing:**
-    *   KMP, Z-Algorithm
-    *   Rolling Hash (BigInt safe)
-    *   Manacher's Algorithm
-*   **Math & Number Theory:**
-    *   Sieve of Eratosthenes, Prime Factorization
-    *   Combinatorics (nCr with modulo)
-    *   GCD, LCM, Modular Exponentiation
-    *   Extended Euclidean, Modular Inverse
-*   **Geometry:**
-    *   Point Class (Vector operations)
-    *   Convex Hull (Monotone Chain)
-    *   Polygon Area
-*   **Search:**
-    *   `lowerBound`, `upperBound` (Binary Search)
+    *   **MST:** Kruskal's Algorithm
+    *   **LCA:** Lowest Common Ancestor (Binary Lifting)
+    *   **Max Flow:** Dinic's Algorithm
+*   **String Algorithms:** KMP, Z-Algorithm, Rolling Hash, Manacher's.
+*   **Math & Number Theory:** GCD, LCM, Modular Inverse, nCr (Combinatorics), Sieve of Eratosthenes.
+*   **Binary Search:** `lowerBound` and `upperBound` (C++ `std::lower_bound` equivalents).
 
 ---
 
 ## 🛠️ How to Run Locally
 
-To test your code locally without constantly pasting inputs into the terminal, create an `io` folder with `input.txt` and `output.txt` files. 
+To test your **JavaScript CP** code locally without manually typing inputs, create an `io` folder with `input.txt` and `output.txt` files.
 
 Run your script using this command:
 
@@ -58,7 +48,7 @@ node main.js < io/input.txt > io/output.txt
 
 ## 📖 Input Examples & Usage
 
-The template separates the I/O handling (`main`) from the actual problem logic (`solve`). This keeps your logic clean and makes it easier to port to platforms like LeetCode.
+The template separates the I/O handling (`main`) from the actual problem logic (`solve`). This keeps your logic clean and makes it easier to port to platforms like **LeetCode**.
 
 ### 1. Reading Single Variables & Arrays
 
@@ -190,5 +180,5 @@ function main() {
 
 ## ⚠️ Important Note: Codeforces vs. LeetCode
 
-* **Codeforces / AtCoder:** Paste the entire template. These platforms pass raw bytes to standard input, so the Fast I/O block is strictly necessary.
-* **LeetCode:** **DO NOT** paste the Fast I/O block. LeetCode does not use `stdin`/`stdout` and will crash if you use `fs.readFileSync(0)`. Only copy the data structures (like `PriorityQueue` or `DSU`) and paste them above your LeetCode solution function.
+* **Codeforces / AtCoder:** Paste the entire template. These platforms pass raw bytes to standard input, so the **Fast I/O** block is strictly necessary.
+* **LeetCode:** **DO NOT** paste the Fast I/O block. LeetCode does not use `stdin`/`stdout`. Only copy the **JS STL** data structures (like `PriorityQueue`, `SegmentTree` or `DSU`) and paste them above your LeetCode solution function.

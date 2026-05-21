@@ -93,13 +93,6 @@ function readBigInt() {
     return token === null ? null : BigInt(token);
 }
 
-// Solve function strictly handles the logic for a single test case.
-function solveCase() {
-    // Use readUInt() for positive integers, readInt() for signed integers,
-    // readToken() for byte-level string work, and readNext() only when a JS string is needed.
-    return "";
-}
-
 // Main function handles I/O and test case looping.
 function main() {
     const t = readInt();
@@ -115,3 +108,10 @@ function main() {
 }
 
 main();
+
+// Solve function strictly handles the logic for a single test case.
+function solveCase() {
+    // Use readUInt() for positive integers, readInt() for signed integers,
+    // readToken() for byte-level string work, and readNext() only when a JS string is needed.
+    return "";
+}

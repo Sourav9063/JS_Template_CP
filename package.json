@@ -4,8 +4,9 @@
   "description": "JavaScript Competitive Programming Template",
   "main": "main.js",
   "scripts": {
-    "build": "esbuild main.js --bundle --platform=node --outfile=output.js",
-    "test": "node main.js < io/input.txt > io/output.txt",
+    "build": "esbuild solve.js --bundle --platform=node --outfile=output.js",
+    "test": "node output.js < io/input.txt > io/output.txt",
+    "verify": "npm run build && npm run test",
     "start": "node main.js"
   },
   "keywords": [

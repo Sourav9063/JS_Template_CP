@@ -1,11 +1,17 @@
 "use strict";
 
-const { Queue } = require("./ds");
+const { Queue } = require("./ds/queue");
 
 /**
  * Dinic's Algorithm for Maximum Flow.
+ *
  * Time Complexity: O(V^2 * E), typically much faster.
  * O(E * sqrt(V)) for unit networks.
+ *
+ * @example
+ * const dinic = new Dinic(2);
+ * dinic.addEdge(1, 2, 7);
+ * console.log(dinic.maxFlow(1, 2)); // 7
  */
 class Dinic {
     constructor(n) {

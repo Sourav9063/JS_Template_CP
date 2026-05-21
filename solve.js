@@ -6,14 +6,9 @@ const buffer = fs.readFileSync(0);
 const inputLength = buffer.length;
 let offset = 0;
 
-/**
- * Reads the next whitespace-delimited token as a JavaScript string.
- *
- * @returns {string|null} Next token, or null at EOF.
- *
- * @example
- * const name = readNext(); // input token: alice
- */
+// Use when you need a normal JavaScript string token.
+// Example input token: "alice" or "12345"
+// Example use: const name = readNext(); const digits = readNext();
 function readNext() {
     while (offset < inputLength && buffer[offset] <= 32) offset++;
     if (offset >= inputLength) return null;
@@ -24,17 +19,10 @@ function readNext() {
     return buffer.toString("utf8", start, offset);
 }
 
-/**
- * Reads the next whitespace-delimited token as a Buffer slice.
- *
- * Use this for byte-level string work to avoid UTF-8 conversion.
- *
- * @returns {Buffer|null} Next token buffer, or null at EOF.
- *
- * @example
- * const s = readToken(); // input token: 123
- * console.log(s[0]); // 49, the ASCII code for '1'
- */
+// Use when you want the fastest token read and can work with character codes.
+// Example input token: "123"
+// token[0] is 49 ('1'), token[1] is 50 ('2'), token[2] is 51 ('3').
+// Example use: const s = readToken(); if (s[i] === 49) countOnes++;
 function readToken() {
     while (offset < inputLength && buffer[offset] <= 32) offset++;
     if (offset >= inputLength) return null;
@@ -45,16 +33,9 @@ function readToken() {
     return buffer.subarray(start, offset);
 }
 
-/**
- * Reads the current remaining line as a JavaScript string.
- *
- * Leading newline characters are skipped before reading the line.
- *
- * @returns {string|null} Line content without newline, or null at EOF.
- *
- * @example
- * const sentence = readLine(); // input line: hello world
- */
+// Use when the value can contain spaces and you need the whole remaining line.
+// Example input line: "hello world from codeforces"
+// Example use: const sentence = readLine();
 function readLine() {
     while (offset < inputLength && (buffer[offset] === 10 || buffer[offset] === 13)) {
         offset++;
@@ -105,26 +86,32 @@ function readInt() {
     return value * sign;
 }
 
-/**
- * Reads the next integer as a BigInt.
- *
- * Use for values outside Number.MAX_SAFE_INTEGER.
- *
- * @returns {bigint|null} Parsed BigInt, or null at EOF.
- *
- * @example
- * const n = readBigInt();
- */
+// Use for integer values larger than Number.MAX_SAFE_INTEGER.
+// Example use: const n = readBigInt();
 function readBigInt() {
-    const word = readNext();
-    return word === null ? null : BigInt(word);
+    const token = readNext();
+    return token === null ? null : BigInt(token);
 }
 
-module.exports = {
-    readNext,
-    readToken,
-    readLine,
-    readUInt,
-    readInt,
-    readBigInt
-};
+// Main function handles I/O and test case looping.
+function main() {
+    const t = readInt();
+    if (t === null) return;
+
+    const out = new Array(t);
+
+    for (let tc = 0; tc < t; tc++) {
+        out[tc] = String(solveCase());
+    }
+
+    process.stdout.write(out.join("\n"));
+}
+
+main();
+
+// Solve function strictly handles the logic for a single test case.
+function solveCase() {
+    // Use readUInt() for positive integers, readInt() for signed integers,
+    // readToken() for byte-level string work, and readNext() only when a JS string is needed.
+    return "";
+}

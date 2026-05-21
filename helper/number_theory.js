@@ -3,10 +3,13 @@
 const { gcd, lcm, power } = require("./math");
 
 /**
- * Sieve of Eratosthenes.
- * Generates all primes up to n.
- * @param {number} n 
- * @returns {Array<number>}
+ * Generates all primes up to n with the Sieve of Eratosthenes.
+ *
+ * @param {number} n - Inclusive upper bound.
+ * @returns {Array<number>} Prime numbers <= n.
+ *
+ * @example
+ * console.log(sieve(10)); // [2, 3, 5, 7]
  */
 function sieve(n) {
     const isPrime = new Array(n + 1).fill(true);
@@ -24,10 +27,15 @@ function sieve(n) {
 }
 
 /**
- * Prime Factorization.
- * Returns map of prime factors and their powers.
- * @param {number} n 
- * @returns {Map<number, number>}
+ * Factorizes n into prime powers.
+ *
+ * @param {number} n - Positive integer.
+ * @returns {Map<number, number>} Map from prime factor to exponent.
+ *
+ * @example
+ * const factors = primeFactors(12);
+ * console.log(factors.get(2)); // 2
+ * console.log(factors.get(3)); // 1
  */
 function primeFactors(n) {
     const factors = new Map();
@@ -46,8 +54,13 @@ function primeFactors(n) {
 }
 
 /**
- * Combinatorics (nCr).
- * Precomputes factorials for O(1) queries modulo m.
+ * Precomputes factorials and inverse factorials for nCr modulo a prime.
+ *
+ * Uses BigInt internally and assumes `mod` is prime for Fermat inverse.
+ *
+ * @example
+ * const comb = new Combinatorics(5, 1000000007n);
+ * console.log(comb.nCr(5, 2)); // 10n
  */
 class Combinatorics {
     constructor(n, mod) {
@@ -65,7 +78,7 @@ class Combinatorics {
             this.invFact[i] = (this.invFact[i + 1] * BigInt(i + 1)) % this.mod;
         }
     }
-    
+
     nCr(n, r) {
         if (r < 0 || r > n) return 0n;
         return (((this.fact[n] * this.invFact[r]) % this.mod) * this.invFact[n - r]) % this.mod;

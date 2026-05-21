@@ -1,6 +1,6 @@
 "use strict";
 
-const { Queue } = require("./ds");
+const { Queue } = require("./ds/queue");
 
 /**
  * Dinic's Algorithm for Maximum Flow.

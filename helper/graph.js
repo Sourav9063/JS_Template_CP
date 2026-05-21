@@ -1,6 +1,8 @@
 "use strict";
 
-const { Queue, PriorityQueue, DSU } = require("./ds");
+const { Queue } = require("./ds/queue");
+const { PriorityQueue } = require("./ds/priority_queue");
+const { DSU } = require("./ds/dsu");
 
 /**
  * Breadth-First Search (BFS) for unweighted graphs.

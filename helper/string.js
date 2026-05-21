@@ -1,11 +1,14 @@
 "use strict";
 
 /**
- * Knuth-Morris-Pratt (KMP) Algorithm.
- * Returns the starting indices of all occurrences of pat in txt.
- * @param {string} txt 
- * @param {string} pat 
- * @returns {Array<number>}
+ * Finds all occurrences of a pattern using Knuth-Morris-Pratt.
+ *
+ * @param {string} txt - Text to search in.
+ * @param {string} pat - Pattern to search for.
+ * @returns {Array<number>} Starting indices of all matches.
+ *
+ * @example
+ * console.log(kmpSearch("ababa", "aba")); // [0, 2]
  */
 function kmpSearch(txt, pat) {
     const m = pat.length;
@@ -53,11 +56,15 @@ function computeLPSArray(pat) {
 }
 
 /**
- * Z-Algorithm.
- * Computes the Z-array where Z[i] is the length of the longest common prefix
- * between the suffix of S starting at i and the prefix of S.
- * @param {string} s 
- * @returns {Array<number>}
+ * Computes the Z-array of a string.
+ *
+ * z[i] is the longest common prefix length of s and s.slice(i).
+ *
+ * @param {string} s - Input string.
+ * @returns {Array<number>} Z-array.
+ *
+ * @example
+ * console.log(zFunction("aaab")); // [0, 2, 1, 0]
  */
 function zFunction(s) {
     const n = s.length;
@@ -70,9 +77,6 @@ function zFunction(s) {
     return z;
 }
 
-/**
- * Trie Implementation.
- */
 class TrieNode {
     constructor() {
         this.children = {};
@@ -80,11 +84,20 @@ class TrieNode {
     }
 }
 
+/**
+ * Prefix tree for string insertion and lookup.
+ *
+ * @example
+ * const trie = new Trie();
+ * trie.insert("code");
+ * console.log(trie.search("code")); // true
+ * console.log(trie.startsWith("co")); // true
+ */
 class Trie {
     constructor() {
         this.root = new TrieNode();
     }
-    
+
     insert(word) {
         let node = this.root;
         for (const char of word) {
@@ -93,7 +106,7 @@ class Trie {
         }
         node.isEndOfWord = true;
     }
-    
+
     search(word) {
         let node = this.root;
         for (const char of word) {
@@ -102,7 +115,7 @@ class Trie {
         }
         return node.isEndOfWord;
     }
-    
+
     startsWith(prefix) {
         let node = this.root;
         for (const char of prefix) {
@@ -115,8 +128,13 @@ class Trie {
 
 /**
  * Rolling Hash for String Matching.
+ *
  * Uses BigInt for robustness.
  * Default MOD = 1e9 + 9, BASE = 31.
+ *
+ * @example
+ * const rh = new RollingHash("ababa");
+ * console.log(rh.getHash(0, 1) === rh.getHash(2, 3)); // true
  */
 class RollingHash {
     constructor(s, base = 31n, mod = 1000000009n) {
@@ -136,10 +154,11 @@ class RollingHash {
     }
     
     /**
-     * Get hash of substring s[l...r] (0-indexed, inclusive).
-     * @param {number} l 
-     * @param {number} r 
-     * @returns {bigint}
+     * Returns hash of substring s[l..r], inclusive.
+     *
+     * @param {number} l - Left index, 0-based.
+     * @param {number} r - Right index, 0-based.
+     * @returns {bigint} Substring hash.
      */
     getHash(l, r) {
         let res = (this.hash[r + 1] - this.hash[l] * this.power[r - l + 1]) % this.mod;
@@ -149,10 +168,17 @@ class RollingHash {
 }
 
 /**
- * Manacher's Algorithm.
- * Returns { d1, d2 } where:
- * d1[i] = radius of odd-length palindrome centered at i. (len = 2*d1[i] - 1)
- * d2[i] = radius of even-length palindrome centered at i-1 and i. (len = 2*d2[i])
+ * Computes odd/even palindrome radii with Manacher's algorithm.
+ *
+ * `d1[i]` is the odd palindrome radius centered at i.
+ * `d2[i]` is the even palindrome radius centered between i - 1 and i.
+ *
+ * @param {string} s - Input string.
+ * @returns {{d1: Array<number>, d2: Array<number>}} Palindrome radius arrays.
+ *
+ * @example
+ * const { d1 } = manacher("aba");
+ * console.log(d1[1]); // 2
  */
 function manacher(s) {
     const n = s.length;

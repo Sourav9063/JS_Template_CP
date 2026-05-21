@@ -1,7 +1,12 @@
 "use strict";
 
 /**
- * 2D Geometry Utilities.
+ * 2D point/vector helper.
+ *
+ * @example
+ * const a = new Point(0, 0);
+ * const b = new Point(3, 4);
+ * console.log(a.dist(b)); // 5
  */
 class Point {
     constructor(x, y) {
@@ -25,9 +30,16 @@ class Point {
 
 /**
  * Computes the orientation of ordered triplet (p, q, r).
- * 0 -> p, q, r are collinear
- * 1 -> Clockwise
- * 2 -> Counterclockwise
+ *
+ * Return values: 0 = collinear, 1 = clockwise, 2 = counterclockwise.
+ *
+ * @param {Point} p - First point.
+ * @param {Point} q - Second point.
+ * @param {Point} r - Third point.
+ * @returns {number} Orientation code.
+ *
+ * @example
+ * console.log(orientation(new Point(0, 0), new Point(1, 0), new Point(1, 1))); // 2
  */
 function orientation(p, q, r) {
     const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
@@ -37,8 +49,15 @@ function orientation(p, q, r) {
 
 /**
  * Computes the signed area of a polygon.
- * @param {Array<Point>} points 
- * @returns {number} Positive if CCW, Negative if CW. Area is 0.5 * abs(result).
+ *
+ * Positive means counterclockwise vertex order; negative means clockwise.
+ *
+ * @param {Array<Point>} points - Polygon vertices in order.
+ * @returns {number} Signed polygon area.
+ *
+ * @example
+ * const poly = [new Point(0, 0), new Point(2, 0), new Point(0, 2)];
+ * console.log(polygonArea(poly)); // 2
  */
 function polygonArea(points) {
     let area = 0;
@@ -51,9 +70,15 @@ function polygonArea(points) {
 
 /**
  * Computes the Convex Hull using Monotone Chain Algorithm.
- * Returns vertices in Counter-Clockwise (CCW) order.
- * @param {Array<Point>} points 
- * @returns {Array<Point>} Vertices of the convex hull.
+ *
+ * Sorts the input array in place and returns hull vertices in CCW order.
+ *
+ * @param {Array<Point>} points - Points to hull.
+ * @returns {Array<Point>} Convex hull vertices.
+ *
+ * @example
+ * const hull = convexHull([new Point(0, 0), new Point(1, 0), new Point(0, 1)]);
+ * console.log(hull.length); // 3
  */
 function convexHull(points) {
     const n = points.length;

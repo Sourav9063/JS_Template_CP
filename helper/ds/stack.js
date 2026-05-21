@@ -1,6 +1,14 @@
 "use strict";
 
-// --- Stack (Replaces std::stack) ---
+/**
+ * LIFO stack, similar to C++ std::stack.
+ *
+ * @example
+ * const st = new Stack();
+ * st.push(1);
+ * st.push(2);
+ * console.log(st.top()); // 2
+ */
 class Stack {
     constructor() { this.data = []; }
     push(x) { this.data.push(x); }

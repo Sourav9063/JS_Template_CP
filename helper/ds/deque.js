@@ -1,6 +1,14 @@
 "use strict";
 
-// --- Deque (Replaces std::deque) ---
+/**
+ * O(1) amortized double-ended queue, similar to C++ std::deque.
+ *
+ * @example
+ * const dq = new Deque();
+ * dq.push_back(2);
+ * dq.push_front(1);
+ * console.log(dq.pop_front()); // 1
+ */
 class Deque {
     constructor(capacity = 16) {
         this.data = new Array(Math.max(1, capacity));

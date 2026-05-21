@@ -17,7 +17,19 @@ class TreapNode {
     }
 }
 
-// --- Ordered Multiset (Replaces std::multiset for ordered operations) ---
+/**
+ * Ordered multiset with duplicate keys, similar to C++ std::multiset.
+ *
+ * Supports expected O(log n) insertion, deletion, lower/upper bound, rank,
+ * and kth-element queries.
+ *
+ * @example
+ * const ms = new OrderedMultiSet();
+ * [5, 1, 3, 3].forEach(x => ms.add(x));
+ * console.log(ms.count(3)); // 2
+ * console.log(ms.lowerBound(4)); // 5
+ * console.log(ms.kth(2)); // 3
+ */
 class OrderedMultiSet {
     constructor(comparator = (a, b) => a - b) {
         this.root = null;

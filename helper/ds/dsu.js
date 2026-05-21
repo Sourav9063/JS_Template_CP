@@ -1,6 +1,15 @@
 "use strict";
 
-// --- Disjoint Set Union (DSU) ---
+/**
+ * Disjoint Set Union with path compression and union by size.
+ *
+ * Assumes elements are usually numbered from 1 to n.
+ *
+ * @example
+ * const dsu = new DSU(3);
+ * dsu.union(1, 2);
+ * console.log(dsu.find(1) === dsu.find(2)); // true
+ */
 class DSU {
     constructor(n) {
         this.parent = Array.from({ length: n + 1 }, (_, i) => i);

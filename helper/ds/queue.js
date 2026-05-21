@@ -1,6 +1,14 @@
 "use strict";
 
-// --- O(1) Queue (Replaces std::queue) ---
+/**
+ * O(1) amortized FIFO queue, similar to C++ std::queue.
+ *
+ * @example
+ * const q = new Queue();
+ * q.push(10);
+ * q.push(20);
+ * console.log(q.pop()); // 10
+ */
 class Queue {
     constructor() { this.q = []; this.head = 0; }
     push(x) { this.q.push(x); }

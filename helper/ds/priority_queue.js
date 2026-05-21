@@ -1,6 +1,17 @@
 "use strict";
 
-// --- Priority Queue (Replaces std::priority_queue) ---
+/**
+ * Binary-heap priority queue, similar to C++ std::priority_queue.
+ *
+ * The comparator should return true when `a` has higher priority than `b`.
+ * The default comparator creates a min-heap for numbers.
+ *
+ * @example
+ * const pq = new PriorityQueue((a, b) => a > b); // max-heap
+ * pq.push(3);
+ * pq.push(10);
+ * console.log(pq.pop()); // 10
+ */
 class PriorityQueue {
     constructor(comparator = (a, b) => a < b) { // Default: Min-Heap
         this.heap = [];

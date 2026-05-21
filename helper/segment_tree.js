@@ -1,10 +1,12 @@
 "use strict";
 
 /**
- * Segment Tree with Lazy Propagation.
- * Supports Range Updates and Range Queries.
- * 
- * Usage:
+ * Segment tree for range-add updates and range-sum queries.
+ *
+ * The constructor accepts a merge function and neutral value, but the lazy
+ * propagation logic is specialized for sum with range-add updates.
+ *
+ * @example
  * const st = new SegmentTree(arr, (a, b) => a + b, 0); // Sum Segment Tree
  * st.update(l, r, val);
  * st.query(l, r);
@@ -94,8 +96,13 @@ class SegmentTree {
 }
 
 /**
- * Sparse Table for Range Minimum Query (Static Arrays).
- * O(N log N) build, O(1) query.
+ * Sparse table for idempotent static range queries.
+ *
+ * Default function is Math.min. Query is O(1) after O(n log n) build.
+ *
+ * @example
+ * const st = new SparseTable([5, 2, 7]);
+ * console.log(st.query(0, 2)); // 2
  */
 class SparseTable {
     constructor(arr, func = Math.min) {

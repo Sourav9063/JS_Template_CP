@@ -43,13 +43,20 @@ npm install
 ### 2. Test with Input File
 To test your code locally, create an `io` folder with `input.txt` and `output.txt` files.
 
-Then run:
+Build `solve.js` into `output.js`, then run:
 
 ```bash
+npm run build
 npm run test
 ```
 
-This script (`node main.js < io/input.txt > io/output.txt`) feeds `io/input.txt` into your code and writes the result to `io/output.txt`.
+The test script (`node output.js < io/input.txt > io/output.txt`) feeds `io/input.txt` into the bundled file and writes the result to `io/output.txt`.
+
+You can also run both steps together:
+
+```bash
+npm run verify
+```
 
 ### 3. Bundle for Submission
 When you are ready to submit to an online judge (like Codeforces), you need a single file containing all your code and helper functions.
@@ -61,6 +68,17 @@ npm run build
 ```
 
 This will generate an **`output.js`** file using `esbuild`. **Copy the contents of `output.js` and paste it into the online judge.**
+
+### 4. VS Code Code Runner
+This repository includes `.vscode/settings.json` for the Code Runner extension. When you run a JavaScript file from VS Code, it uses the active file as the entry point:
+
+```bash
+cd $workspaceRoot && ./node_modules/.bin/esbuild $fullFileName --bundle --platform=node --outfile=output.js && node output.js < io/input.txt > io/output.txt
+```
+
+This is the same flow as `npm run build` plus `npm run test`, except `solve.js` is replaced by the active file opened in VS Code. That lets you run files like `contest/2231/b.js` while still generating `output.js` and writing results to `io/output.txt`.
+
+The command uses `./node_modules/.bin/esbuild` because Code Runner runs in a normal shell, where `esbuild` may not be on `PATH`. npm scripts automatically add `node_modules/.bin` to `PATH`.
 
 ---
 

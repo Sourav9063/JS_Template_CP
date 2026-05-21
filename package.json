@@ -5,8 +5,9 @@
   "main": "main.js",
   "scripts": {
     "build": "esbuild solve.js --bundle --platform=node --outfile=output.js",
+    "build:min": "esbuild solve.js --bundle --platform=node --minify --outfile=output.js",
     "test": "node output.js < io/input.txt > io/output.txt",
-    "verify": "npm run build && npm run test",
+    "verify": "npm run build:min && npm run test",
     "start": "node main.js"
   },
   "keywords": [

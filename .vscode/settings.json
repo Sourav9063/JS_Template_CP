@@ -2,6 +2,6 @@
     "code-runner.runInTerminal": true,
     "code-runner.saveFileBeforeRun": true,
     "code-runner.executorMap": {
-        "javascript": "cd $workspaceRoot && ./node_modules/.bin/esbuild $fullFileName --bundle --platform=node --minify --outfile=output.js && node output.js < io/input.txt > io/output.txt"
+        "javascript": "cd $workspaceRoot && ./node_modules/.bin/esbuild $fullFileName --bundle --platform=node --outfile=output.js && node output.js < io/input.txt > io/output.txt"
     }
 }

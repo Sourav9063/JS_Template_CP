@@ -2,66 +2,95 @@
 
 const fs = require("fs");
 
-/**
- * 1. FAST I/O (Crucial Optimization for Codeforces)
- * Note: Remove this entire section for LeetCode.
- */
 const buffer = fs.readFileSync(0);
+const inputLength = buffer.length;
 let offset = 0;
 
-// Use when you need a normal JavaScript string token, e.g. names or simple digit strings.
+// Use when you need a normal JavaScript string token.
+// Example input token: "alice" or "12345"
+// Example use: const name = readNext(); const digits = readNext();
 function readNext() {
-    while (offset < buffer.length && buffer[offset] <= 32) offset++;
-    if (offset >= buffer.length) return null;
-    let start = offset;
-    while (offset < buffer.length && buffer[offset] > 32) offset++;
+    while (offset < inputLength && buffer[offset] <= 32) offset++;
+    if (offset >= inputLength) return null;
+
+    const start = offset;
+    while (offset < inputLength && buffer[offset] > 32) offset++;
+
     return buffer.toString("utf8", start, offset);
 }
 
-// Use for maximum performance when reading a token you can process as bytes.
-// Example: digit strings where '1', '2', '3' can be checked as 49, 50, 51.
+// Use when you want the fastest token read and can work with character codes.
+// Example input token: "123"
+// token[0] is 49 ('1'), token[1] is 50 ('2'), token[2] is 51 ('3').
+// Example use: const s = readToken(); if (s[i] === 49) countOnes++;
 function readToken() {
-    while (offset < buffer.length && buffer[offset] <= 32) offset++;
-    const start = offset;
+    while (offset < inputLength && buffer[offset] <= 32) offset++;
+    if (offset >= inputLength) return null;
 
-    while (offset < buffer.length && buffer[offset] > 32) offset++;
+    const start = offset;
+    while (offset < inputLength && buffer[offset] > 32) offset++;
 
     return buffer.subarray(start, offset);
 }
 
-// Use when the input can contain spaces and you need the whole remaining line.
+// Use when the value can contain spaces and you need the whole remaining line.
+// Example input line: "hello world from codeforces"
+// Example use: const sentence = readLine();
 function readLine() {
-    // Skip any leftover newlines (\n = 10) or carriage returns (\r = 13)
-    while (offset < buffer.length && (buffer[offset] === 10 || buffer[offset] === 13)) {
+    while (offset < inputLength && (buffer[offset] === 10 || buffer[offset] === 13)) {
         offset++;
     }
-    if (offset >= buffer.length) return null;
-    let start = offset;
-    
-    // Read until we hit the next newline or carriage return
-    while (offset < buffer.length && buffer[offset] !== 10 && buffer[offset] !== 13) {
+    if (offset >= inputLength) return null;
+
+    const start = offset;
+    while (offset < inputLength && buffer[offset] !== 10 && buffer[offset] !== 13) {
         offset++;
     }
+
     return buffer.toString("utf8", start, offset);
 }
 
-// Use for regular integer input within JavaScript Number range.
-function readInt() {
-    while (offset < buffer.length && buffer[offset] <= 32) offset++;
-    if (offset >= buffer.length) return null;
-    let res = 0, sign = 1;
-    if (buffer[offset] === 45) { sign = -1; offset++; } // '-' is 45 in ASCII
-    while (offset < buffer.length && buffer[offset] > 32) {
-        res = res * 10 + (buffer[offset] - 48);
+function readUInt() {
+    while (offset < inputLength && buffer[offset] <= 32) offset++;
+    if (offset >= inputLength) return null;
+
+    let value = 0;
+    while (offset < inputLength) {
+        const c = buffer[offset];
+        if (c <= 32) break;
+        value = value * 10 + c - 48;
         offset++;
     }
-    return res * sign;
+
+    return value;
+}
+
+function readInt() {
+    while (offset < inputLength && buffer[offset] <= 32) offset++;
+    if (offset >= inputLength) return null;
+
+    let value = 0;
+    let sign = 1;
+    if (buffer[offset] === 45) {
+        sign = -1;
+        offset++;
+    }
+
+    while (offset < inputLength) {
+        const c = buffer[offset];
+        if (c <= 32) break;
+        value = value * 10 + c - 48;
+        offset++;
+    }
+
+    return value * sign;
 }
 
 // Use for integer values larger than Number.MAX_SAFE_INTEGER.
+// Example use: const n = readBigInt();
 function readBigInt() {
-    const word = readToken();
-    return word ? BigInt(word.toString()) : null;
+    const token = readNext();
+    return token === null ? null : BigInt(token);
 }
 
 /**
@@ -84,27 +113,66 @@ class Queue {
     front() { return this.empty() ? null : this.q[this.head]; }
     empty() { return this.head === this.q.length; }
     size() { return this.q.length - this.head; }
+    clear() { this.q.length = 0; this.head = 0; }
 }
 
 // --- Deque (Replaces std::deque) ---
 class Deque {
-    constructor() { this.frontArr = []; this.backArr = []; }
-    push_back(val) { this.backArr.push(val); }
-    push_front(val) { this.frontArr.push(val); }
-    pop_back() { 
-        if (this.backArr.length) return this.backArr.pop();
-        return this.frontArr.shift(); // O(N) fallback, rare if balanced
+    constructor(capacity = 16) {
+        this.data = new Array(Math.max(1, capacity));
+        this.head = 0;
+        this.len = 0;
     }
-    pop_front() {
-        if (this.frontArr.length) return this.frontArr.pop();
-        let val = this.backArr[0];
-        this.backArr.shift(); // O(N) fallback
+
+    _grow() {
+        const old = this.data;
+        const n = old.length;
+        const next = new Array(n << 1);
+
+        for (let i = 0; i < this.len; i++) {
+            next[i] = old[(this.head + i) % n];
+        }
+
+        this.data = next;
+        this.head = 0;
+    }
+
+    push_back(val) {
+        if (this.len === this.data.length) this._grow();
+        this.data[(this.head + this.len) % this.data.length] = val;
+        this.len++;
+    }
+
+    push_front(val) {
+        if (this.len === this.data.length) this._grow();
+        this.head = (this.head - 1 + this.data.length) % this.data.length;
+        this.data[this.head] = val;
+        this.len++;
+    }
+
+    pop_back() {
+        if (this.empty()) return null;
+        const idx = (this.head + this.len - 1) % this.data.length;
+        const val = this.data[idx];
+        this.data[idx] = undefined;
+        this.len--;
         return val;
     }
-    front() { return this.frontArr.length ? this.frontArr[this.frontArr.length - 1] : this.backArr[0]; }
-    back() { return this.backArr.length ? this.backArr[this.backArr.length - 1] : this.frontArr[0]; }
-    empty() { return this.frontArr.length === 0 && this.backArr.length === 0; }
-    size() { return this.frontArr.length + this.backArr.length; }
+
+    pop_front() {
+        if (this.empty()) return null;
+        const val = this.data[this.head];
+        this.data[this.head] = undefined;
+        this.head = (this.head + 1) % this.data.length;
+        this.len--;
+        return val;
+    }
+
+    front() { return this.empty() ? null : this.data[this.head]; }
+    back() { return this.empty() ? null : this.data[(this.head + this.len - 1) % this.data.length]; }
+    empty() { return this.len === 0; }
+    size() { return this.len; }
+    clear() { this.data.fill(undefined); this.head = 0; this.len = 0; }
 }
 
 // --- Priority Queue (Replaces std::priority_queue) ---
@@ -116,6 +184,7 @@ class PriorityQueue {
     size() { return this.heap.length; }
     empty() { return this.heap.length === 0; }
     peek() { return this.heap[0]; }
+    clear() { this.heap.length = 0; }
     push(val) {
         this.heap.push(val);
         this.siftUp(this.size() - 1);
@@ -172,6 +241,24 @@ const upperBound = (arr, target) => {
     return l;
 };
 
+const binarySearchFirstTrue = (lo, hi, predicate) => {
+    while (lo < hi) {
+        const mid = Math.floor((lo + hi) / 2);
+        if (predicate(mid)) hi = mid;
+        else lo = mid + 1;
+    }
+    return lo;
+};
+
+const binarySearchLastTrue = (lo, hi, predicate) => {
+    while (lo < hi) {
+        const mid = Math.floor((lo + hi + 1) / 2);
+        if (predicate(mid)) lo = mid;
+        else hi = mid - 1;
+    }
+    return lo;
+};
+
 // --- Disjoint Set Union (DSU) ---
 class DSU {
     constructor(n) {
@@ -180,8 +267,14 @@ class DSU {
         this.components = n;
     }
     find(i) {
-        if (this.parent[i] === i) return i;
-        return this.parent[i] = this.find(this.parent[i]); 
+        let root = i;
+        while (this.parent[root] !== root) root = this.parent[root];
+        while (this.parent[i] !== i) {
+            const p = this.parent[i];
+            this.parent[i] = root;
+            i = p;
+        }
+        return root;
     }
     union(i, j) {
         let rootI = this.find(i), rootJ = this.find(j);
@@ -208,6 +301,21 @@ class BIT {
         return sum;
     }
     rangeQuery(l, r) { return this.query(r) - this.query(l - 1); }
+    lowerBound(target) {
+        let idx = 0;
+        let bit = 1;
+        while ((bit << 1) < this.tree.length) bit <<= 1;
+
+        for (; bit > 0; bit >>= 1) {
+            const next = idx + bit;
+            if (next < this.tree.length && this.tree[next] < target) {
+                idx = next;
+                target -= this.tree[next];
+            }
+        }
+
+        return idx + 1;
+    }
 }
 
 /**
@@ -220,17 +328,84 @@ const make2D = (r, c, val = 0) => Array.from({ length: r }, () => new Array(c).f
 const arrayMax = (arr) => arr.reduce((a, b) => (a > b ? a : b));
 const arrayMin = (arr) => arr.reduce((a, b) => (a < b ? a : b));
 
-const gcd = (a, b) => b === 0n || b === 0 ? a : gcd(b, a % b);
-const lcm = (a, b) => (a / gcd(a, b)) * b;
+const prefixSum = (arr) => {
+    const pref = new Array(arr.length + 1).fill(0);
+    for (let i = 0; i < arr.length; i++) {
+        pref[i + 1] = pref[i] + arr[i];
+    }
+    return pref;
+};
+
+const coordinateCompress = (arr) => {
+    const values = [...new Set(arr)].sort((a, b) => a - b);
+    const id = new Map();
+
+    for (let i = 0; i < values.length; i++) {
+        id.set(values[i], i);
+    }
+
+    return {
+        values,
+        compressed: arr.map(x => id.get(x)),
+        id
+    };
+};
+
+const gcd = (a, b) => {
+    if (typeof a === "bigint" || typeof b === "bigint") {
+        a = BigInt(a);
+        b = BigInt(b);
+        if (a < 0n) a = -a;
+        if (b < 0n) b = -b;
+        while (b !== 0n) {
+            const t = a % b;
+            a = b;
+            b = t;
+        }
+        return a;
+    }
+
+    a = Math.abs(a);
+    b = Math.abs(b);
+    while (b !== 0) {
+        const t = a % b;
+        a = b;
+        b = t;
+    }
+    return a;
+};
+
+const lcm = (a, b) => {
+    if (typeof a === "bigint" || typeof b === "bigint") {
+        a = BigInt(a);
+        b = BigInt(b);
+        if (a === 0n || b === 0n) return 0n;
+        return (a / gcd(a, b)) * b;
+    }
+    if (a === 0 || b === 0) return 0;
+    return (a / gcd(a, b)) * b;
+};
+
+const modNormalize = (x, mod) => {
+    if (typeof x === "bigint" || typeof mod === "bigint") {
+        x = BigInt(x);
+        mod = BigInt(mod);
+        x %= mod;
+        return x < 0n ? x + mod : x;
+    }
+    x %= mod;
+    return x < 0 ? x + mod : x;
+};
 
 // Modular Exponentiation (base^exp % mod)
 const power = (base, exp, mod) => {
+    mod = BigInt(mod);
     let res = 1n;
-    base = BigInt(base) % BigInt(mod);
+    base = BigInt(base) % mod;
     exp = BigInt(exp);
     while (exp > 0n) {
-        if (exp % 2n === 1n) res = (res * base) % BigInt(mod);
-        base = (base * base) % BigInt(mod);
+        if (exp & 1n) res = (res * base) % mod;
+        base = (base * base) % mod;
         exp /= 2n;
     }
     return res;
@@ -240,41 +415,25 @@ const power = (base, exp, mod) => {
  * 4. MAIN LOGIC
  */
 
-// Solve function strictly handles the logic for a single test case
-function solve(n, arr) {
-    // Example logic: sum the array
-    let sum = 0;
-    for (let i = 0; i < n; i++) {
-        sum += arr[i];
-    }
-    
-    // Return the result to be printed
-    return sum;
-}
-
-// Main function handles I/O and test case looping
+// Main function handles I/O and test case looping.
 function main() {
-    const out = [];
-    
-    let t = readInt(); 
-    if (t === null) return; // Exit if file is empty
+    const t = readInt();
+    if (t === null) return;
 
-    while (t-- > 0) {
-        // 1. Read testcase inputs
-        const n = readInt();
-        
-        const arr = new Array(n);
-        for(let i = 0; i < n; i++) {
-            arr[i] = readInt();
-        }
+    const out = new Array(t);
 
-        // 2. Call solve and store the result
-        const result = solve(n, arr);
-        out.push(result);
+    for (let tc = 0; tc < t; tc++) {
+        out[tc] = String(solveCase());
     }
 
-    // 3. Flush output at once
-    process.stdout.write(out.join("\n") + "\n");
+    process.stdout.write(out.join("\n"));
 }
 
 main();
+
+// Solve function strictly handles the logic for a single test case.
+function solveCase() {
+    // Use readUInt() for positive integers, readInt() for signed integers,
+    // readToken() for byte-level string work, and readNext() only when a JS string is needed.
+    return "";
+}

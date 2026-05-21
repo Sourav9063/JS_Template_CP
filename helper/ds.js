@@ -16,27 +16,66 @@ class Queue {
     front() { return this.empty() ? null : this.q[this.head]; }
     empty() { return this.head === this.q.length; }
     size() { return this.q.length - this.head; }
+    clear() { this.q.length = 0; this.head = 0; }
 }
 
 // --- Deque (Replaces std::deque) ---
 class Deque {
-    constructor() { this.frontArr = []; this.backArr = []; }
-    push_back(val) { this.backArr.push(val); }
-    push_front(val) { this.frontArr.push(val); }
-    pop_back() { 
-        if (this.backArr.length) return this.backArr.pop();
-        return this.frontArr.shift(); // O(N) fallback, rare if balanced
+    constructor(capacity = 16) {
+        this.data = new Array(Math.max(1, capacity));
+        this.head = 0;
+        this.len = 0;
     }
-    pop_front() {
-        if (this.frontArr.length) return this.frontArr.pop();
-        let val = this.backArr[0];
-        this.backArr.shift(); // O(N) fallback
+
+    _grow() {
+        const old = this.data;
+        const n = old.length;
+        const next = new Array(n << 1);
+
+        for (let i = 0; i < this.len; i++) {
+            next[i] = old[(this.head + i) % n];
+        }
+
+        this.data = next;
+        this.head = 0;
+    }
+
+    push_back(val) {
+        if (this.len === this.data.length) this._grow();
+        this.data[(this.head + this.len) % this.data.length] = val;
+        this.len++;
+    }
+
+    push_front(val) {
+        if (this.len === this.data.length) this._grow();
+        this.head = (this.head - 1 + this.data.length) % this.data.length;
+        this.data[this.head] = val;
+        this.len++;
+    }
+
+    pop_back() {
+        if (this.empty()) return null;
+        const idx = (this.head + this.len - 1) % this.data.length;
+        const val = this.data[idx];
+        this.data[idx] = undefined;
+        this.len--;
         return val;
     }
-    front() { return this.frontArr.length ? this.frontArr[this.frontArr.length - 1] : this.backArr[0]; }
-    back() { return this.backArr.length ? this.backArr[this.backArr.length - 1] : this.frontArr[0]; }
-    empty() { return this.frontArr.length === 0 && this.backArr.length === 0; }
-    size() { return this.frontArr.length + this.backArr.length; }
+
+    pop_front() {
+        if (this.empty()) return null;
+        const val = this.data[this.head];
+        this.data[this.head] = undefined;
+        this.head = (this.head + 1) % this.data.length;
+        this.len--;
+        return val;
+    }
+
+    front() { return this.empty() ? null : this.data[this.head]; }
+    back() { return this.empty() ? null : this.data[(this.head + this.len - 1) % this.data.length]; }
+    empty() { return this.len === 0; }
+    size() { return this.len; }
+    clear() { this.data.fill(undefined); this.head = 0; this.len = 0; }
 }
 
 // --- Priority Queue (Replaces std::priority_queue) ---
@@ -48,6 +87,7 @@ class PriorityQueue {
     size() { return this.heap.length; }
     empty() { return this.heap.length === 0; }
     peek() { return this.heap[0]; }
+    clear() { this.heap.length = 0; }
     push(val) {
         this.heap.push(val);
         this.siftUp(this.size() - 1);
@@ -91,8 +131,14 @@ class DSU {
         this.components = n;
     }
     find(i) {
-        if (this.parent[i] === i) return i;
-        return this.parent[i] = this.find(this.parent[i]); 
+        let root = i;
+        while (this.parent[root] !== root) root = this.parent[root];
+        while (this.parent[i] !== i) {
+            const p = this.parent[i];
+            this.parent[i] = root;
+            i = p;
+        }
+        return root;
     }
     union(i, j) {
         let rootI = this.find(i), rootJ = this.find(j);
@@ -119,6 +165,21 @@ class BIT {
         return sum;
     }
     rangeQuery(l, r) { return this.query(r) - this.query(l - 1); }
+    lowerBound(target) {
+        let idx = 0;
+        let bit = 1;
+        while ((bit << 1) < this.tree.length) bit <<= 1;
+
+        for (; bit > 0; bit >>= 1) {
+            const next = idx + bit;
+            if (next < this.tree.length && this.tree[next] < target) {
+                idx = next;
+                target -= this.tree[next];
+            }
+        }
+
+        return idx + 1;
+    }
 }
 
 module.exports = {

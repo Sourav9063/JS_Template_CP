@@ -1,24 +1,60 @@
 "use strict";
 
 const gcd = (a, b) => {
-    if (typeof a === 'bigint' || typeof b === 'bigint') {
+    if (typeof a === "bigint" || typeof b === "bigint") {
         a = BigInt(a);
         b = BigInt(b);
-        return b === 0n ? a : gcd(b, a % b);
+        if (a < 0n) a = -a;
+        if (b < 0n) b = -b;
+        while (b !== 0n) {
+            const t = a % b;
+            a = b;
+            b = t;
+        }
+        return a;
     }
-    return b === 0 ? a : gcd(b, a % b);
+
+    a = Math.abs(a);
+    b = Math.abs(b);
+    while (b !== 0) {
+        const t = a % b;
+        a = b;
+        b = t;
+    }
+    return a;
 };
 
-const lcm = (a, b) => (a / gcd(a, b)) * b;
+const lcm = (a, b) => {
+    if (typeof a === "bigint" || typeof b === "bigint") {
+        a = BigInt(a);
+        b = BigInt(b);
+        if (a === 0n || b === 0n) return 0n;
+        return (a / gcd(a, b)) * b;
+    }
+    if (a === 0 || b === 0) return 0;
+    return (a / gcd(a, b)) * b;
+};
+
+const modNormalize = (x, mod) => {
+    if (typeof x === "bigint" || typeof mod === "bigint") {
+        x = BigInt(x);
+        mod = BigInt(mod);
+        x %= mod;
+        return x < 0n ? x + mod : x;
+    }
+    x %= mod;
+    return x < 0 ? x + mod : x;
+};
 
 // Modular Exponentiation (base^exp % mod)
 const power = (base, exp, mod) => {
+    mod = BigInt(mod);
     let res = 1n;
-    base = BigInt(base) % BigInt(mod);
+    base = BigInt(base) % mod;
     exp = BigInt(exp);
     while (exp > 0n) {
-        if (exp % 2n === 1n) res = (res * base) % BigInt(mod);
-        base = (base * base) % BigInt(mod);
+        if (exp & 1n) res = (res * base) % mod;
+        base = (base * base) % mod;
         exp /= 2n;
     }
     return res;
@@ -44,6 +80,7 @@ const modInverse = (a, m) => {
 module.exports = {
     gcd,
     lcm,
+    modNormalize,
     power,
     extendedGCD,
     modInverse

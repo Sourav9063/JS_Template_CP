@@ -21,7 +21,27 @@ const upperBound = (arr, target) => {
     return l;
 };
 
+const binarySearchFirstTrue = (lo, hi, predicate) => {
+    while (lo < hi) {
+        const mid = Math.floor((lo + hi) / 2);
+        if (predicate(mid)) hi = mid;
+        else lo = mid + 1;
+    }
+    return lo;
+};
+
+const binarySearchLastTrue = (lo, hi, predicate) => {
+    while (lo < hi) {
+        const mid = Math.floor((lo + hi + 1) / 2);
+        if (predicate(mid)) lo = mid;
+        else hi = mid - 1;
+    }
+    return lo;
+};
+
 module.exports = {
     lowerBound,
-    upperBound
+    upperBound,
+    binarySearchFirstTrue,
+    binarySearchLastTrue
 };

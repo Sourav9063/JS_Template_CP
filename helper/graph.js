@@ -36,13 +36,21 @@ function bfs(start, adj, n) {
  * @param {Array<number>} traversal - Order of visited nodes.
  */
 function dfs(u, adj, visited, traversal = []) {
-    visited[u] = true;
-    traversal.push(u);
-    for (const v of adj[u]) {
-        if (!visited[v]) {
-            dfs(v, adj, visited, traversal);
+    const stack = [u];
+
+    while (stack.length) {
+        const node = stack.pop();
+        if (visited[node]) continue;
+
+        visited[node] = true;
+        traversal.push(node);
+
+        for (let i = adj[node].length - 1; i >= 0; i--) {
+            const v = adj[node][i];
+            if (!visited[v]) stack.push(v);
         }
     }
+
     return traversal;
 }
 
@@ -181,11 +189,7 @@ function kruskal(n, edges) {
         }
     }
     
-    if (dsu.components > 1) return { mstWeight: -1, mstEdges: [] }; // Graph not connected (assuming 0-indexed potentially unused 0, logic check needed based on 1-based DSU in ds.js)
-    // DSU in ds.js is 1-based/0-based flexible (size n+1). 
-    // If graph uses 1..n, components starts at n. Each union decr by 1. 
-    // If connected, components should be 1 (if node 0 is used, else maybe 2 if node 0 unused). 
-    // Adjust logic based on usage. Assuming standard 1..n usage.
+    if (mstEdges.length !== n - 1) return { mstWeight: -1, mstEdges: [] };
     
     return { mstWeight, mstEdges };
 }
@@ -208,18 +212,25 @@ class LCA {
         this.depth = new Array(n + 1).fill(0);
         this.root = root;
         
-        this._dfs(root, root);
+        this._build(root);
     }
 
-    _dfs(u, p) {
-        this.up[u][0] = p;
-        for (let i = 1; i <= this.LOG; i++) {
-            this.up[u][i] = this.up[this.up[u][i - 1]][i - 1];
-        }
-        for (const v of this.adj[u]) {
-            if (v !== p) {
-                this.depth[v] = this.depth[u] + 1;
-                this._dfs(v, u);
+    _build(root) {
+        const stack = [[root, root]];
+
+        while (stack.length) {
+            const [u, p] = stack.pop();
+            this.up[u][0] = p;
+
+            for (let i = 1; i <= this.LOG; i++) {
+                this.up[u][i] = this.up[this.up[u][i - 1]][i - 1];
+            }
+
+            for (const v of this.adj[u]) {
+                if (v !== p) {
+                    this.depth[v] = this.depth[u] + 1;
+                    stack.push([v, u]);
+                }
             }
         }
     }

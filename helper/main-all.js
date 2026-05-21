@@ -116,6 +116,17 @@ class Queue {
     clear() { this.q.length = 0; this.head = 0; }
 }
 
+// --- Stack (Replaces std::stack) ---
+class Stack {
+    constructor() { this.data = []; }
+    push(x) { this.data.push(x); }
+    pop() { return this.empty() ? null : this.data.pop(); }
+    top() { return this.empty() ? null : this.data[this.data.length - 1]; }
+    empty() { return this.data.length === 0; }
+    size() { return this.data.length; }
+    clear() { this.data.length = 0; }
+}
+
 // --- Deque (Replaces std::deque) ---
 class Deque {
     constructor(capacity = 16) {
